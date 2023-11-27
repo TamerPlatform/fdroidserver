@@ -472,7 +472,8 @@ def read_config(opts=None):
 
     if 'repo_url' in config:
         if not config['repo_url'].endswith('/repo'):
-            raise FDroidException(_('repo_url needs to end with /repo'))
+            raise FDroidException(_('repo_url "{url}" needs to end with /repo').format(url=config['repo_url']))
+
 
     if 'archive_url' in config:
         if not config['archive_url'].endswith('/archive'):

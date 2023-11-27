@@ -135,7 +135,7 @@ def update_awsbucket_s3cmd(repo_section):
     if options.quiet:
         s3cmd_sync += ['--quiet']
 
-    s3url = s3bucketurl + '/fdroid/'
+    s3url = s3bucketurl + '/'
     logging.debug('s3cmd sync new files in ' + repo_section + ' to ' + s3url)
     logging.debug(_('Running first pass with MD5 checking disabled'))
     excludes = _get_index_excludes(repo_section)
@@ -202,7 +202,7 @@ def update_awsbucket_libcloud(repo_section):
         logging.info(_('Created new container "{name}"')
                      .format(name=container.name))
 
-    upload_dir = 'fdroid/' + repo_section
+    upload_dir =  repo_section
     objs = dict()
     for obj in container.list_objects():
         if obj.name.startswith(upload_dir + '/'):
@@ -212,7 +212,7 @@ def update_awsbucket_libcloud(repo_section):
         for name in files:
             upload = False
             file_to_upload = os.path.join(root, name)
-            object_name = 'fdroid/' + os.path.relpath(file_to_upload, os.getcwd())
+            object_name = os.path.relpath(file_to_upload, os.getcwd())
             if object_name not in objs:
                 upload = True
             else:
@@ -384,8 +384,8 @@ def update_servergitmirrors(servergitmirrors, repo_section):
     if repo_section == 'repo':
         git_mirror_path = 'git-mirror'
         dotgit = os.path.join(git_mirror_path, '.git')
-        git_fdroiddir = os.path.join(git_mirror_path, 'fdroid')
-        git_repodir = os.path.join(git_fdroiddir, repo_section)
+        
+        git_repodir = os.path.join(git_mirror_path, repo_section)
         if not os.path.isdir(git_repodir):
             os.makedirs(git_repodir)
         # github/gitlab use bare git repos, so only count the .git folder
@@ -448,7 +448,7 @@ def update_servergitmirrors(servergitmirrors, repo_section):
             progress = None
 
         # only deploy to GitLab Artifacts if too big for GitLab Pages
-        if common.get_dir_size(git_fdroiddir) <= common.GITLAB_COM_PAGES_MAX_SIZE:
+        if common.get_dir_size(git_repodir) <= common.GITLAB_COM_PAGES_MAX_SIZE:
             gitlab_ci_job_name = 'pages'
         else:
             gitlab_ci_job_name = 'GitLab Artifacts'
